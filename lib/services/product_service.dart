@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import '../config/api_config.dart';
 import '../services/auth_service.dart';
@@ -556,6 +557,91 @@ class ProductService {
       return response.statusCode == 200;
     } catch (e) {
       return false;
+    }
+  }
+
+  /// Update an existing product. Auth required.
+  static Future<Map<String, dynamic>?> updateProduct({
+    required int productId,
+    required String nombre,
+    required String descripcion,
+    required double precio,
+    required int cantidad,
+    required int idCategoria,
+  }) async {
+    try {
+      final token = await AuthService.getToken();
+      if (token == null) return null;
+
+      final response = await http.post(
+        Uri.parse(ApiConfig.myProductsUpdateEndpoint),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          'product_id': productId,
+          'nombre': nombre,
+          'descripcion': descripcion,
+          'precio': precio,
+          'cantidad': cantidad,
+          'id_categoria': idCategoria,
+        }),
+      ).timeout(ApiConfig.timeout);
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body) as Map<String, dynamic>;
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Upload a new product with image. Auth required (multipart/form-data).
+  static Future<Map<String, dynamic>?> uploadProduct({
+    required String nombre,
+    required String descripcion,
+    required double precio,
+    required int cantidad,
+    required int idCategoria,
+    required Uint8List imageBytes,
+    required String imageName,
+  }) async {
+    try {
+      final token = await AuthService.getToken();
+      if (token == null) return null;
+
+      final request = http.MultipartRequest(
+        'POST',
+        Uri.parse(ApiConfig.productsUploadEndpoint),
+      );
+      request.headers.addAll({
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+
+      request.fields['nombre'] = nombre;
+      request.fields['descripcion'] = descripcion;
+      request.fields['precio'] = precio.toString();
+      request.fields['cantidad'] = cantidad.toString();
+      request.fields['id_categoria'] = idCategoria.toString();
+      request.files.add(http.MultipartFile.fromBytes(
+        'image',
+        imageBytes,
+        filename: imageName,
+      ));
+
+      final streamed = await request.send().timeout(ApiConfig.timeout);
+      final response = await http.Response.fromStream(streamed);
+
+      if (response.statusCode == 201) {
+        return jsonDecode(response.body) as Map<String, dynamic>;
+      }
+      return null;
+    } catch (e) {
+      return null;
     }
   }
 

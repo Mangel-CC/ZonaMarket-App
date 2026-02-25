@@ -37,6 +37,7 @@ class ApiConfig {
   // My Products
   static const String myProductsEndpoint = '$baseUrl/my-products';
   static const String myProductsDeleteEndpoint = '$baseUrl/my-products/delete';
+  static const String myProductsUpdateEndpoint = '$baseUrl/my-products/update';
 
   // Products Upload
   static const String productsUploadEndpoint = '$baseUrl/products/upload';

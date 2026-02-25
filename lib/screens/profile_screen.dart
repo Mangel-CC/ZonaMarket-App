@@ -4,6 +4,10 @@ import '../services/product_service.dart';
 import '../services/auth_service.dart';
 import '../theme/app_theme.dart';
 import 'login_screen.dart';
+import 'upload_product_screen.dart';
+import 'my_products_screen.dart';
+import 'favorites_screen.dart';
+import 'notifications_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -395,28 +399,76 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         icon: Icons.shopping_bag_outlined,
                         label: 'Mis productos',
                         subtitle: '$_myProductsCount productos publicados',
-                        onTap: () {},
+                        onTap: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const MyProductsScreen(),
+                            ),
+                          );
+                          _fetchStats();
+                        },
+                      ),
+                      const Divider(height: 1, indent: 56, color: AppColors.border),
+                      _MenuItem(
+                        icon: Icons.add_box_outlined,
+                        label: 'Subir producto',
+                        subtitle: 'Publica un nuevo articulo',
+                        onTap: () async {
+                          final uploaded = await Navigator.push<bool>(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const UploadProductScreen(),
+                            ),
+                          );
+                          if (uploaded == true) _fetchStats();
+                        },
                       ),
                       const Divider(height: 1, indent: 56, color: AppColors.border),
                       _MenuItem(
                         icon: Icons.favorite_outline_rounded,
                         label: 'Mis favoritos',
                         subtitle: '$_favoritesCount productos guardados',
-                        onTap: () {},
+                        onTap: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const FavoritesScreen(),
+                            ),
+                          );
+                          _fetchStats();
+                        },
                       ),
                       const Divider(height: 1, indent: 56, color: AppColors.border),
                       _MenuItem(
                         icon: Icons.notifications_outlined,
                         label: 'Notificaciones',
                         subtitle: 'Gestiona tus alertas',
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const NotificationsScreen(),
+                            ),
+                          );
+                        },
                       ),
                       const Divider(height: 1, indent: 56, color: AppColors.border),
                       _MenuItem(
                         icon: Icons.chat_outlined,
                         label: 'Mis chats',
                         subtitle: 'Conversaciones activas',
-                        onTap: () {},
+                        onTap: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: const Text('Chats disponible proximamente'),
+                              backgroundColor: AppColors.primary,
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              margin: const EdgeInsets.all(16),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
