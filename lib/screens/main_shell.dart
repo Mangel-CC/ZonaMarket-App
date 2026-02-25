@@ -4,7 +4,9 @@ import 'explore_screen.dart';
 import 'categories_screen.dart';
 import 'orders_screen.dart';
 import 'profile_screen.dart';
+import 'login_screen.dart';
 import '../widgets/bottom_nav.dart';
+import '../services/auth_service.dart';
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
@@ -24,7 +26,19 @@ class _MainShellState extends State<MainShell> {
     ProfileScreen(),
   ];
 
-  void _onNavTap(int index) {
+  Future<void> _onNavTap(int index) async {
+    // Tabs 3 (Pedidos) y 4 (Perfil) requieren sesión iniciada
+    if (index >= 3) {
+      final loggedIn = await AuthService.isLoggedIn();
+      if (!loggedIn) {
+        if (mounted) {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const LoginScreen()),
+          );
+        }
+        return;
+      }
+    }
     setState(() => _currentIndex = index);
   }
 

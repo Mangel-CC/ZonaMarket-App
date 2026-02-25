@@ -108,6 +108,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   }
 
   void _showSnackBar(String message, {bool isError = false}) {
+    final colors = context.colors;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
@@ -118,7 +119,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             fontWeight: FontWeight.w500,
           ),
         ),
-        backgroundColor: isError ? AppColors.destructive : AppColors.accent,
+        backgroundColor: isError ? colors.destructive : colors.accent,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         margin: const EdgeInsets.all(16),
@@ -129,16 +130,17 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: Column(
         children: [
-          _buildAppBar(context),
+          _buildAppBar(context, colors),
           Expanded(
             child: _isLoading
-                ? _buildLoadingState()
+                ? _buildLoadingState(colors)
                 : _favorites.isEmpty
-                ? _buildEmptyState()
+                ? _buildEmptyState(colors)
                 : RefreshIndicator(
               onRefresh: _loadData,
               child: ListView.builder(
@@ -148,7 +150,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                 itemCount: _favorites.length,
                 itemBuilder: (context, index) {
-                  return _buildFavoriteItem(_favorites[index], index);
+                  return _buildFavoriteItem(_favorites[index], index, colors);
                 },
               ),
             ),
@@ -158,9 +160,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     );
   }
 
-  Widget _buildAppBar(BuildContext context) {
+  Widget _buildAppBar(BuildContext context, DynamicColors colors) {
     return Container(
-      color: AppColors.card,
+      color: colors.card,
       child: SafeArea(
         bottom: false,
         child: Padding(
@@ -169,10 +171,10 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             children: [
               IconButton(
                 onPressed: () => Navigator.of(context).pop(),
-                icon: const Icon(
+                icon: Icon(
                   Icons.arrow_back_rounded,
                   size: 22,
-                  color: AppColors.foreground,
+                  color: colors.foreground,
                 ),
               ),
               const SizedBox(width: 4),
@@ -181,21 +183,21 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
+                    Text(
                       'Mis Favoritos',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.foreground,
+                        color: colors.foreground,
                         letterSpacing: -0.3,
                       ),
                     ),
                     if (!_isLoading)
                       Text(
                         '${_favorites.length} ${_favorites.length == 1 ? 'producto' : 'productos'}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: AppColors.mutedForeground,
+                          color: colors.mutedForeground,
                         ),
                       ),
                   ],
@@ -208,7 +210,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     );
   }
 
-  Widget _buildLoadingState() {
+  Widget _buildLoadingState(DynamicColors colors) {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -218,17 +220,17 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             child: Container(
               height: 100,
               decoration: BoxDecoration(
-                color: AppColors.card,
+                color: colors.card,
                 borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: AppColors.border),
+                border: Border.all(color: colors.border),
               ),
               child: Row(
                 children: [
                   Container(
                     width: 100,
-                    decoration: const BoxDecoration(
-                      color: AppColors.secondary,
-                      borderRadius: BorderRadius.horizontal(
+                    decoration: BoxDecoration(
+                      color: colors.secondary,
+                      borderRadius: const BorderRadius.horizontal(
                         left: Radius.circular(14),
                       ),
                     ),
@@ -244,7 +246,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                             height: 14,
                             width: double.infinity,
                             decoration: BoxDecoration(
-                              color: AppColors.secondary,
+                              color: colors.secondary,
                               borderRadius: BorderRadius.circular(6),
                             ),
                           ),
@@ -253,7 +255,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                             height: 14,
                             width: 80,
                             decoration: BoxDecoration(
-                              color: AppColors.secondary,
+                              color: colors.secondary,
                               borderRadius: BorderRadius.circular(6),
                             ),
                           ),
@@ -270,7 +272,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(DynamicColors colors) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -279,31 +281,31 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             width: 80,
             height: 80,
             decoration: BoxDecoration(
-              color: AppColors.secondary,
+              color: colors.secondary,
               borderRadius: BorderRadius.circular(24),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.favorite_outline_rounded,
               size: 36,
-              color: AppColors.mutedForeground,
+              color: colors.mutedForeground,
             ),
           ),
           const SizedBox(height: 20),
-          const Text(
+          Text(
             'Sin favoritos aun',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: AppColors.foreground,
+              color: colors.foreground,
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
-            'Toca el corazon en los productos\nque te gusten para guardarlos aqui',
+          Text(
+            'Toca el corazon en los productos\nque te gusten para guardarlos aquí',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 14,
-              color: AppColors.mutedForeground,
+              color: colors.mutedForeground,
               height: 1.5,
             ),
           ),
@@ -313,15 +315,15 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               decoration: BoxDecoration(
-                color: AppColors.primary,
+                color: colors.primary,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Text(
+              child: Text(
                 'Explorar productos',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.primaryForeground,
+                  color: colors.primaryForeground,
                 ),
               ),
             ),
@@ -331,7 +333,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     );
   }
 
-  Widget _buildFavoriteItem(Map<String, dynamic> fav, int index) {
+  Widget _buildFavoriteItem(Map<String, dynamic> fav, int index, DynamicColors colors) {
     final nombre = fav['nombre'] as String? ?? 'Producto';
     final imagen = fav['imagen'] as String?;
     final precio = _toDouble(fav['precio']);
@@ -345,7 +347,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       background: Container(
         margin: const EdgeInsets.only(bottom: 12),
         decoration: BoxDecoration(
-          color: AppColors.destructive,
+          color: colors.destructive,
           borderRadius: BorderRadius.circular(14),
         ),
         alignment: Alignment.centerRight,
@@ -361,9 +363,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         child: Container(
           margin: const EdgeInsets.only(bottom: 12),
           decoration: BoxDecoration(
-            color: AppColors.card,
+            color: colors.card,
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: AppColors.border),
+            border: Border.all(color: colors.border),
           ),
           clipBehavior: Clip.antiAlias,
           child: Row(
@@ -372,24 +374,24 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
               Container(
                 width: 100,
                 height: 100,
-                color: AppColors.secondary,
+                color: colors.secondary,
                 child: imagen != null && imagen.isNotEmpty
                     ? Image.network(
                   imagen,
                   fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => const Center(
+                  errorBuilder: (_, __, ___) => Center(
                     child: Icon(
                       Icons.image_outlined,
                       size: 28,
-                      color: AppColors.mutedForeground,
+                      color: colors.mutedForeground,
                     ),
                   ),
                 )
-                    : const Center(
+                    : Center(
                   child: Icon(
                     Icons.image_outlined,
                     size: 28,
-                    color: AppColors.mutedForeground,
+                    color: colors.mutedForeground,
                   ),
                 ),
               ),
@@ -403,10 +405,10 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     children: [
                       Text(
                         nombre,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.foreground,
+                          color: colors.foreground,
                           height: 1.3,
                         ),
                         maxLines: 2,
@@ -415,10 +417,10 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                       const SizedBox(height: 6),
                       Text(
                         _formatPrice(precio),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.primary,
+                          color: colors.primary,
                         ),
                       ),
                       const SizedBox(height: 6),
@@ -429,15 +431,15 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                             vertical: 3,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.accentLight,
+                            color: colors.accentLight,
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
                             '$stock en stock',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
-                              color: AppColors.accent,
+                              color: colors.accent,
                             ),
                           ),
                         )
@@ -448,15 +450,15 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                             vertical: 3,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.destructive.withValues(alpha: 0.1),
+                            color: colors.destructive.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(6),
                           ),
-                          child: const Text(
+                          child: Text(
                             'Sin stock',
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
-                              color: AppColors.destructive,
+                              color: colors.destructive,
                             ),
                           ),
                         ),
@@ -470,10 +472,10 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 padding: const EdgeInsets.only(right: 8),
                 child: IconButton(
                   onPressed: () => _removeFavorite(productId, index),
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.favorite_rounded,
                     size: 22,
-                    color: AppColors.destructive,
+                    color: colors.destructive,
                   ),
                   splashRadius: 20,
                 ),

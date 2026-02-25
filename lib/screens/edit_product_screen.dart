@@ -29,7 +29,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   void initState() {
     super.initState();
     _nombreController.text = widget.productData['nombre'] as String? ?? '';
-    _descripcionController.text = widget.productData['descripcion'] as String? ?? '';
+    _descripcionController.text = widget.productData['descripción'] as String? ?? '';
     final precio = widget.productData['precio'];
     _precioController.text = precio != null ? double.parse(precio.toString()).toStringAsFixed(2) : '';
     final cantidad = widget.productData['cantidad'];
@@ -163,7 +163,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     child: Image.network(
                       imagen,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => const Center(
+                      errorBuilder: (_, _, _) => const Center(
                         child: Icon(Icons.image_outlined, size: 48, color: AppColors.mutedForeground),
                       ),
                     ),
@@ -184,7 +184,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Informacion del producto',
+                      'Información del producto',
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
                     const SizedBox(height: 16),
@@ -201,14 +201,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           v == null || v.trim().isEmpty ? 'Campo requerido' : null,
                     ),
                     const SizedBox(height: 14),
-                    const _FieldLabel(label: 'Descripcion'),
+                    const _FieldLabel(label: 'Descripción'),
                     const SizedBox(height: 6),
                     TextFormField(
                       controller: _descripcionController,
                       maxLines: 3,
                       style: const TextStyle(fontSize: 14, color: AppColors.foreground),
                       decoration: _inputDecoration(
-                        hint: 'Describe tu producto, estado, caracteristicas...',
+                        hint: 'Describe tu producto, estado, características...',
                       ),
                       validator: (v) =>
                           v == null || v.trim().isEmpty ? 'Campo requerido' : null,

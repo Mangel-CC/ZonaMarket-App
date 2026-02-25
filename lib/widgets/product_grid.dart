@@ -19,6 +19,7 @@ class ProductGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(
@@ -43,21 +44,21 @@ class ProductGrid extends StatelessWidget {
                     isLoading
                         ? 'Cargando...'
                         : '${products.length} productos disponibles',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
-                      color: AppColors.mutedForeground,
+                      color: colors.mutedForeground,
                     ),
                   ),
                 ],
               ),
               GestureDetector(
                 onTap: () {},
-                child: const Text(
+                child: Text(
                   'Ver todos',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
-                    color: AppColors.primary,
+                    color: colors.primary,
                   ),
                 ),
               ),
@@ -81,13 +82,13 @@ class ProductGrid extends StatelessWidget {
                     Icon(
                       Icons.inventory_2_outlined,
                       size: 48,
-                      color: AppColors.mutedForeground.withValues(alpha: 0.5),
+                      color: colors.mutedForeground.withValues(alpha: 0.5),
                     ),
                     const SizedBox(height: 12),
-                    const Text(
+                    Text(
                       'No se encontraron productos',
                       style: TextStyle(
-                        color: AppColors.mutedForeground,
+                        color: colors.mutedForeground,
                         fontSize: 14,
                       ),
                     ),

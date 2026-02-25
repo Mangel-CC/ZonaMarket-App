@@ -19,11 +19,12 @@ class MarketplaceHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return ClipRect(
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
         child: Container(
-          color: AppColors.card.withValues(alpha: 0.8),
+          color: colors.card.withValues(alpha: 0.8),
           child: SafeArea(
             bottom: false,
             child: Padding(
@@ -35,14 +36,14 @@ class MarketplaceHeader extends StatelessWidget {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: AppColors.primary,
+                      color: colors.primary,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Center(
+                    child: Center(
                       child: Text(
                         'ZM',
                         style: TextStyle(
-                          color: AppColors.primaryForeground,
+                          color: colors.primaryForeground,
                           fontWeight: FontWeight.w700,
                           fontSize: 14,
                           letterSpacing: -0.5,
@@ -60,7 +61,7 @@ class MarketplaceHeader extends StatelessWidget {
                         Text(
                           'Hola, buen dia',
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppColors.mutedForeground,
+                            color: colors.mutedForeground,
                             fontSize: 12,
                           ),
                         ),
@@ -104,17 +105,17 @@ class MarketplaceHeader extends StatelessWidget {
                       );
                     },
                     badgeCount: unreadNotifications > 0 ? unreadNotifications : null,
-                    badgeColor: AppColors.accent,
+                    badgeColor: colors.accent,
                   ),
                   const SizedBox(width: 4),
                   // Avatar
                   CircleAvatar(
                     radius: 16,
-                    backgroundColor: AppColors.primaryLight,
+                    backgroundColor: colors.primaryLight,
                     child: Text(
                       userInitials.isNotEmpty ? userInitials : '?',
-                      style: const TextStyle(
-                        color: AppColors.primary,
+                      style: TextStyle(
+                        color: colors.primary,
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
                       ),
@@ -145,13 +146,14 @@ class _HeaderIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Stack(
       clipBehavior: Clip.none,
       children: [
         IconButton(
           onPressed: onTap,
           icon: Icon(icon, size: 20),
-          color: AppColors.mutedForeground,
+          color: colors.mutedForeground,
           padding: const EdgeInsets.all(6),
           constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
           splashRadius: 20,
@@ -164,9 +166,9 @@ class _HeaderIconButton extends StatelessWidget {
               width: 16,
               height: 16,
               decoration: BoxDecoration(
-                color: badgeColor ?? AppColors.primary,
+                color: badgeColor ?? colors.primary,
                 shape: BoxShape.circle,
-                border: Border.all(color: AppColors.card, width: 1.5),
+                border: Border.all(color: colors.card, width: 1.5),
               ),
               child: Center(
                 child: Text(

@@ -31,6 +31,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
@@ -39,36 +40,36 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: AppColors.secondary,
+                color: colors.secondary,
                 borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: AppColors.border),
+                border: Border.all(color: colors.border),
               ),
               child: TextField(
                 controller: _controller,
                 onChanged: _onChanged,
                 onSubmitted: widget.onSearch,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   hintText: 'Buscar productos, servicios...',
                   hintStyle: TextStyle(
-                    color: AppColors.mutedForeground,
+                    color: colors.mutedForeground,
                     fontSize: 14,
                   ),
                   prefixIcon: Padding(
-                    padding: EdgeInsets.only(left: 12, right: 8),
+                    padding: const EdgeInsets.only(left: 12, right: 8),
                     child: Icon(
                       Icons.search_rounded,
                       size: 20,
-                      color: AppColors.mutedForeground,
+                      color: colors.mutedForeground,
                     ),
                   ),
-                  prefixIconConstraints: BoxConstraints(
+                  prefixIconConstraints: const BoxConstraints(
                     minWidth: 40,
                     minHeight: 40,
                   ),
                   border: InputBorder.none,
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(
+                  contentPadding: const EdgeInsets.symmetric(
                     horizontal: 0,
                     vertical: 12,
                   ),
@@ -82,16 +83,16 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: AppColors.card,
+              color: colors.card,
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: AppColors.border),
+              border: Border.all(color: colors.border),
             ),
             child: IconButton(
               onPressed: () {},
-              icon: const Icon(
+              icon: Icon(
                 Icons.tune_rounded,
                 size: 20,
-                color: AppColors.mutedForeground,
+                color: colors.mutedForeground,
               ),
               padding: EdgeInsets.zero,
             ),

@@ -4,12 +4,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ThemeProvider extends ChangeNotifier {
   static const String _key = 'zona_theme_mode';
 
-  ThemeMode _themeMode = ThemeMode.system;
-  ThemeMode get themeMode => _themeMode;
-
-  ThemeProvider() {
+  /// Global singleton — access anywhere without context.
+  static final ThemeProvider instance = ThemeProvider._();
+  ThemeProvider._() {
     _loadThemeMode();
   }
+
+  ThemeMode _themeMode = ThemeMode.system;
+  ThemeMode get themeMode => _themeMode;
 
   Future<void> _loadThemeMode() async {
     final prefs = await SharedPreferences.getInstance();

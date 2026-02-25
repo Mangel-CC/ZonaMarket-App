@@ -54,17 +54,17 @@
       }
 
       if (password.length < 6) {
-        setState(() => _errorMessage = 'La contrasena debe tener al menos 6 caracteres');
+        setState(() => _errorMessage = 'La contraseña debe tener al menos 6 caracteres');
         return;
       }
 
       if (password != confirmPassword) {
-        setState(() => _errorMessage = 'Las contrasenas no coinciden');
+        setState(() => _errorMessage = 'Las contraseñas no coinciden');
         return;
       }
 
       if (!_acceptTerms) {
-        setState(() => _errorMessage = 'Debes aceptar los terminos y condiciones');
+        setState(() => _errorMessage = 'Debes aceptar los términos y condiciones');
         return;
       }
 
@@ -82,13 +82,14 @@
       setState(() => _isLoading = false);
 
       if (result.success) {
+        final colors = context.colors;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Cuenta creada exitosamente. Inicia sesion.',
+              'Cuenta creada exitosamente. Inicia sesión.',
               style: GoogleFonts.inter(fontWeight: FontWeight.w500),
             ),
-            backgroundColor: AppColors.accent,
+            backgroundColor: colors.accent,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             margin: const EdgeInsets.all(16),
@@ -104,8 +105,9 @@
 
     @override
     Widget build(BuildContext context) {
+      final colors = context.colors;
       return Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: colors.background,
         body: SafeArea(
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
@@ -122,14 +124,14 @@
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: AppColors.card,
+                        color: colors.card,
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.border),
+                        border: Border.all(color: colors.border),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.arrow_back_rounded,
                         size: 20,
-                        color: AppColors.foreground,
+                        color: colors.foreground,
                       ),
                     ),
                   ),
@@ -143,11 +145,11 @@
                           width: 60,
                           height: 60,
                           decoration: BoxDecoration(
-                            color: AppColors.primary,
+                            color: colors.primary,
                             borderRadius: BorderRadius.circular(18),
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.primary.withValues(alpha: 0.3),
+                                color: colors.primary.withValues(alpha: 0.3),
                                 blurRadius: 20,
                                 offset: const Offset(0, 6),
                               ),
@@ -171,16 +173,16 @@
                           style: GoogleFonts.dmSans(
                             fontSize: 24,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.foreground,
+                            color: colors.foreground,
                             letterSpacing: -0.5,
                           ),
                         ),
                         const SizedBox(height: 6),
                         Text(
-                          'Unete a JuchiMercado y empieza a explorar',
+                          'Unete a ZonaMarket y empieza a explorar',
                           style: GoogleFonts.inter(
                             fontSize: 14,
-                            color: AppColors.mutedForeground,
+                            color: colors.mutedForeground,
                             height: 1.5,
                           ),
                         ),
@@ -196,20 +198,20 @@
                       margin: const EdgeInsets.only(bottom: 20),
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       decoration: BoxDecoration(
-                        color: AppColors.destructive.withValues(alpha: 0.08),
+                        color: colors.destructive.withValues(alpha: 0.08),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.destructive.withValues(alpha: 0.3)),
+                        border: Border.all(color: colors.destructive.withValues(alpha: 0.3)),
                       ),
                       child: Row(
                         children: [
-                          Icon(Icons.error_outline_rounded, size: 18, color: AppColors.destructive),
+                          Icon(Icons.error_outline_rounded, size: 18, color: colors.destructive),
                           const SizedBox(width: 10),
                           Expanded(
                             child: Text(
                               _errorMessage!,
                               style: GoogleFonts.inter(
                                 fontSize: 13,
-                                color: AppColors.destructive,
+                                color: colors.destructive,
                                 fontWeight: FontWeight.w500,
                                 height: 1.4,
                               ),
@@ -217,7 +219,7 @@
                           ),
                           GestureDetector(
                             onTap: () => setState(() => _errorMessage = null),
-                            child: Icon(Icons.close_rounded, size: 16, color: AppColors.destructive.withValues(alpha: 0.6)),
+                            child: Icon(Icons.close_rounded, size: 16, color: colors.destructive.withValues(alpha: 0.6)),
                           ),
                         ],
                       ),
@@ -229,9 +231,9 @@
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _buildLabel('Nombre'),
+                            _buildLabel(colors, 'Nombre'),
                             const SizedBox(height: 8),
-                            _buildTextField(controller: _nameController, hint: 'Juan', icon: Icons.person_outline_rounded),
+                            _buildTextField(colors: colors, controller: _nameController, hint: 'Juan', icon: Icons.person_outline_rounded),
                           ],
                         ),
                       ),
@@ -240,9 +242,9 @@
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _buildLabel('Apellido'),
+                            _buildLabel(colors, 'Apellido'),
                             const SizedBox(height: 8),
-                            _buildTextField(controller: _lastnameController, hint: 'Perez', icon: Icons.person_outline_rounded),
+                            _buildTextField(colors: colors, controller: _lastnameController, hint: 'Perez', icon: Icons.person_outline_rounded),
                           ],
                         ),
                       ),
@@ -251,9 +253,10 @@
 
                   const SizedBox(height: 18),
 
-                  _buildLabel('Correo electronico'),
+                  _buildLabel(colors, 'Correo electrónico'),
                   const SizedBox(height: 8),
                   _buildTextField(
+                    colors: colors,
                     controller: _emailController,
                     hint: 'tu@correo.com',
                     icon: Icons.mail_outline_rounded,
@@ -262,9 +265,10 @@
 
                   const SizedBox(height: 18),
 
-                  _buildLabel('Contrasena'),
+                  _buildLabel(colors, 'Contraseña'),
                   const SizedBox(height: 8),
                   _buildPasswordField(
+                    colors: colors,
                     controller: _passwordController,
                     hint: 'Minimo 6 caracteres',
                     obscure: _obscurePassword,
@@ -273,11 +277,12 @@
 
                   const SizedBox(height: 18),
 
-                  _buildLabel('Confirmar contrasena'),
+                  _buildLabel(colors, 'Confirmar contraseña'),
                   const SizedBox(height: 8),
                   _buildPasswordField(
+                    colors: colors,
                     controller: _confirmPasswordController,
-                    hint: 'Repite tu contrasena',
+                    hint: 'Repite tu contraseña',
                     obscure: _obscureConfirm,
                     onToggle: () => setState(() => _obscureConfirm = !_obscureConfirm),
                   ),
@@ -295,10 +300,10 @@
                           height: 20,
                           margin: const EdgeInsets.only(top: 1),
                           decoration: BoxDecoration(
-                            color: _acceptTerms ? AppColors.primary : Colors.transparent,
+                            color: _acceptTerms ? colors.primary : Colors.transparent,
                             borderRadius: BorderRadius.circular(6),
                             border: Border.all(
-                              color: _acceptTerms ? AppColors.primary : AppColors.border,
+                              color: _acceptTerms ? colors.primary : colors.border,
                               width: 1.5,
                             ),
                           ),
@@ -310,17 +315,17 @@
                         Expanded(
                           child: RichText(
                             text: TextSpan(
-                              style: GoogleFonts.inter(fontSize: 13, color: AppColors.mutedForeground, height: 1.4),
+                              style: GoogleFonts.inter(fontSize: 13, color: colors.mutedForeground, height: 1.4),
                               children: [
                                 const TextSpan(text: 'Acepto los '),
                                 TextSpan(
-                                  text: 'Terminos y Condiciones',
-                                  style: GoogleFonts.inter(fontSize: 13, color: AppColors.primary, fontWeight: FontWeight.w600),
+                                  text: 'Términos y Condiciones',
+                                  style: GoogleFonts.inter(fontSize: 13, color: colors.primary, fontWeight: FontWeight.w600),
                                 ),
                                 const TextSpan(text: ' y la '),
                                 TextSpan(
-                                  text: 'Politica de Privacidad',
-                                  style: GoogleFonts.inter(fontSize: 13, color: AppColors.primary, fontWeight: FontWeight.w600),
+                                  text: 'Política de Privacidad',
+                                  style: GoogleFonts.inter(fontSize: 13, color: colors.primary, fontWeight: FontWeight.w600),
                                 ),
                               ],
                             ),
@@ -338,9 +343,9 @@
                     child: ElevatedButton(
                       onPressed: _isLoading ? null : _handleRegister,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
+                        backgroundColor: colors.primary,
                         foregroundColor: Colors.white,
-                        disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.6),
+                        disabledBackgroundColor: colors.primary.withValues(alpha: 0.6),
                         disabledForegroundColor: Colors.white.withValues(alpha: 0.8),
                         elevation: 0,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
@@ -369,13 +374,13 @@
                       children: [
                         Text(
                           'Ya tienes cuenta? ',
-                          style: GoogleFonts.inter(fontSize: 14, color: AppColors.mutedForeground),
+                          style: GoogleFonts.inter(fontSize: 14, color: colors.mutedForeground),
                         ),
                         GestureDetector(
                           onTap: () => Navigator.of(context).pop(),
                           child: Text(
-                            'Inicia sesion',
-                            style: GoogleFonts.inter(fontSize: 14, color: AppColors.primary, fontWeight: FontWeight.w600),
+                            'Inicia sesión',
+                            style: GoogleFonts.inter(fontSize: 14, color: colors.primary, fontWeight: FontWeight.w600),
                           ),
                         ),
                       ],
@@ -391,14 +396,15 @@
       );
     }
 
-    Widget _buildLabel(String text) {
+    Widget _buildLabel(DynamicColors colors, String text) {
       return Text(
         text,
-        style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.foreground),
+        style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: colors.foreground),
       );
     }
 
     Widget _buildTextField({
+      required DynamicColors colors,
       required TextEditingController controller,
       required String hint,
       required IconData icon,
@@ -406,20 +412,20 @@
     }) {
       return Container(
         decoration: BoxDecoration(
-          color: AppColors.card,
+          color: colors.card,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: colors.border),
         ),
         child: TextField(
           controller: controller,
           keyboardType: keyboardType,
-          style: GoogleFonts.inter(fontSize: 14, color: AppColors.foreground),
+          style: GoogleFonts.inter(fontSize: 14, color: colors.foreground),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: GoogleFonts.inter(fontSize: 14, color: AppColors.mutedForeground.withValues(alpha: 0.7)),
+            hintStyle: GoogleFonts.inter(fontSize: 14, color: colors.mutedForeground.withValues(alpha: 0.7)),
             prefixIcon: Padding(
               padding: const EdgeInsets.only(left: 14, right: 10),
-              child: Icon(icon, size: 20, color: AppColors.mutedForeground),
+              child: Icon(icon, size: 20, color: colors.mutedForeground),
             ),
             prefixIconConstraints: const BoxConstraints(minWidth: 44, minHeight: 44),
             border: InputBorder.none,
@@ -432,6 +438,7 @@
     }
 
     Widget _buildPasswordField({
+      required DynamicColors colors,
       required TextEditingController controller,
       required String hint,
       required bool obscure,
@@ -439,20 +446,20 @@
     }) {
       return Container(
         decoration: BoxDecoration(
-          color: AppColors.card,
+          color: colors.card,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: colors.border),
         ),
         child: TextField(
           controller: controller,
           obscureText: obscure,
-          style: GoogleFonts.inter(fontSize: 14, color: AppColors.foreground),
+          style: GoogleFonts.inter(fontSize: 14, color: colors.foreground),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: GoogleFonts.inter(fontSize: 14, color: AppColors.mutedForeground.withValues(alpha: 0.7)),
-            prefixIcon: const Padding(
-              padding: EdgeInsets.only(left: 14, right: 10),
-              child: Icon(Icons.lock_outline_rounded, size: 20, color: AppColors.mutedForeground),
+            hintStyle: GoogleFonts.inter(fontSize: 14, color: colors.mutedForeground.withValues(alpha: 0.7)),
+            prefixIcon: Padding(
+              padding: const EdgeInsets.only(left: 14, right: 10),
+              child: Icon(Icons.lock_outline_rounded, size: 20, color: colors.mutedForeground),
             ),
             prefixIconConstraints: const BoxConstraints(minWidth: 44, minHeight: 44),
             suffixIcon: Padding(
@@ -462,7 +469,7 @@
                 icon: Icon(
                   obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
                   size: 20,
-                  color: AppColors.mutedForeground,
+                  color: colors.mutedForeground,
                 ),
               ),
             ),

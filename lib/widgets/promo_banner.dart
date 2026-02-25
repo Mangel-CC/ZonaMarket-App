@@ -6,6 +6,7 @@ class PromoBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       child: ClipRRect(
@@ -13,8 +14,8 @@ class PromoBanner extends StatelessWidget {
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.all(20),
-          decoration: const BoxDecoration(
-            color: AppColors.primary,
+          decoration: BoxDecoration(
+            color: colors.primary,
           ),
           child: Stack(
             children: [
@@ -94,21 +95,21 @@ class PromoBanner extends StatelessWidget {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
                           'Explorar ofertas',
                           style: TextStyle(
-                            color: AppColors.primary,
+                            color: colors.primary,
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        SizedBox(width: 6),
+                        const SizedBox(width: 6),
                         Icon(
                           Icons.arrow_forward_rounded,
-                          color: AppColors.primary,
+                          color: colors.primary,
                           size: 14,
                         ),
                       ],

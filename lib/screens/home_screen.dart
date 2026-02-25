@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/product.dart';
 import '../services/product_service.dart';
 import '../services/auth_service.dart';
+import 'login_screen.dart';
 import '../widgets/marketplace_header.dart';
 import '../widgets/search_bar_widget.dart';
 import '../widgets/promo_banner.dart';
@@ -141,7 +142,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _onToggleFavorite(int productId) async {
-    if (_userId == 0) return;
+    if (_userId == 0) {
+      if (mounted) {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const LoginScreen()),
+        );
+      }
+      return;
+    }
     final result = await ProductService.toggleFavorite(
       userId: _userId,
       productId: productId,

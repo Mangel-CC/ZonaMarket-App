@@ -22,14 +22,15 @@ class MarketplaceBottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return ClipRect(
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
         child: Container(
           decoration: BoxDecoration(
-            color: AppColors.card.withValues(alpha: 0.85),
-            border: const Border(
-              top: BorderSide(color: AppColors.border, width: 1),
+            color: colors.card.withValues(alpha: 0.85),
+            border: Border(
+              top: BorderSide(color: colors.border, width: 1),
             ),
           ),
           child: SafeArea(
@@ -55,7 +56,7 @@ class MarketplaceBottomNav extends StatelessWidget {
                             height: 32,
                             decoration: BoxDecoration(
                               color: isActive
-                                  ? AppColors.primaryLight
+                                  ? colors.primaryLight
                                   : Colors.transparent,
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -63,8 +64,8 @@ class MarketplaceBottomNav extends StatelessWidget {
                               isActive ? item.activeIcon : item.icon,
                               size: 22,
                               color: isActive
-                                  ? AppColors.primary
-                                  : AppColors.mutedForeground,
+                                  ? colors.primary
+                                  : colors.mutedForeground,
                             ),
                           ),
                           const SizedBox(height: 2),
@@ -76,8 +77,8 @@ class MarketplaceBottomNav extends StatelessWidget {
                                   ? FontWeight.w600
                                   : FontWeight.w500,
                               color: isActive
-                                  ? AppColors.primary
-                                  : AppColors.mutedForeground,
+                                  ? colors.primary
+                                  : colors.mutedForeground,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,

@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../services/product_service.dart';
 import '../services/auth_service.dart';
 import '../theme/app_theme.dart';
+import '../theme/theme_provider.dart';
 import 'login_screen.dart';
 import 'upload_product_screen.dart';
 import 'my_products_screen.dart';
@@ -83,10 +84,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _saveProfile() async {
     if (_passwordController.text.isEmpty) {
+      final colors = context.colors;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Ingresa tu contrasena para guardar cambios'),
-          backgroundColor: AppColors.destructive,
+          content: const Text('Ingresa tu contraseña para guardar cambios'),
+          backgroundColor: colors.destructive,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           margin: const EdgeInsets.all(16),
@@ -105,6 +107,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
 
     if (mounted) {
+      final colors = context.colors;
       setState(() {
         _isSaving = false;
         _isEditing = false;
@@ -115,7 +118,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text('Perfil actualizado correctamente'),
-            backgroundColor: AppColors.accent,
+            backgroundColor: colors.accent,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             margin: const EdgeInsets.all(16),
@@ -126,7 +129,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text('Error al actualizar el perfil'),
-            backgroundColor: AppColors.destructive,
+            backgroundColor: colors.destructive,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             margin: const EdgeInsets.all(16),
@@ -141,8 +144,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Cerrar sesion'),
-        content: const Text('Estas seguro de que deseas cerrar sesion?'),
+        title: const Text('Cerrar sesión'),
+        content: const Text('Estas seguro de que deseas cerrar sesión?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -150,7 +153,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Cerrar sesion', style: TextStyle(color: AppColors.destructive)),
+            child: Text('Cerrar sesión', style: TextStyle(color: context.colors.destructive)),
           ),
         ],
       ),
@@ -169,10 +172,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     if (_isLoading) {
-      return const Scaffold(
-        backgroundColor: AppColors.background,
-        body: Center(child: CircularProgressIndicator()),
+      return Scaffold(
+        backgroundColor: colors.background,
+        body: const Center(child: CircularProgressIndicator()),
       );
     }
 
@@ -183,7 +187,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final email = _profile?['email'] ?? '';
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -198,7 +202,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   width: double.infinity,
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: AppColors.primary,
+                    color: colors.primary,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Column(
@@ -276,9 +280,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: AppColors.card,
+                    color: colors.card,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppColors.border),
+                    border: Border.all(color: colors.border),
                   ),
                   child: Column(
                     children: [
@@ -289,7 +293,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Informacion personal',
+                              'Información personal',
                               style: Theme.of(context).textTheme.titleSmall,
                             ),
                             GestureDetector(
@@ -297,7 +301,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               child: Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                 decoration: BoxDecoration(
-                                  color: _isEditing ? AppColors.primaryLight : AppColors.secondary,
+                                  color: _isEditing ? colors.primaryLight : colors.secondary,
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Text(
@@ -305,7 +309,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,
-                                    color: _isEditing ? AppColors.primary : AppColors.foreground,
+                                    color: _isEditing ? colors.primary : colors.foreground,
                                   ),
                                 ),
                               ),
@@ -329,7 +333,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         enabled: _isEditing,
                       ),
                       _ProfileField(
-                        label: 'Correo electronico',
+                        label: 'Correo electrónico',
                         controller: _emailController,
                         icon: Icons.mail_outline_rounded,
                         enabled: _isEditing,
@@ -338,7 +342,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                       if (_isEditing) ...[
                         _ProfileField(
-                          label: 'Contrasena actual',
+                          label: 'Contraseña actual',
                           controller: _passwordController,
                           icon: Icons.lock_outline_rounded,
                           enabled: true,
@@ -352,7 +356,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: ElevatedButton(
                               onPressed: _isSaving ? null : _saveProfile,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primary,
+                                backgroundColor: colors.primary,
                                 foregroundColor: Colors.white,
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
@@ -389,9 +393,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: AppColors.card,
+                    color: colors.card,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppColors.border),
+                    border: Border.all(color: colors.border),
                   ),
                   child: Column(
                     children: [
@@ -409,7 +413,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           _fetchStats();
                         },
                       ),
-                      const Divider(height: 1, indent: 56, color: AppColors.border),
+                      Divider(height: 1, indent: 56, color: colors.border),
                       _MenuItem(
                         icon: Icons.add_box_outlined,
                         label: 'Subir producto',
@@ -424,7 +428,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           if (uploaded == true) _fetchStats();
                         },
                       ),
-                      const Divider(height: 1, indent: 56, color: AppColors.border),
+                      Divider(height: 1, indent: 56, color: colors.border),
                       _MenuItem(
                         icon: Icons.favorite_outline_rounded,
                         label: 'Mis favoritos',
@@ -439,7 +443,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           _fetchStats();
                         },
                       ),
-                      const Divider(height: 1, indent: 56, color: AppColors.border),
+                      Divider(height: 1, indent: 56, color: colors.border),
                       _MenuItem(
                         icon: Icons.notifications_outlined,
                         label: 'Notificaciones',
@@ -453,16 +457,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           );
                         },
                       ),
-                      const Divider(height: 1, indent: 56, color: AppColors.border),
+                      Divider(height: 1, indent: 56, color: colors.border),
                       _MenuItem(
                         icon: Icons.chat_outlined,
                         label: 'Mis chats',
                         subtitle: 'Conversaciones activas',
                         onTap: () {
+                          final c = context.colors;
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: const Text('Chats disponible proximamente'),
-                              backgroundColor: AppColors.primary,
+                              content: const Text('Chats disponible próximamente'),
+                              backgroundColor: c.primary,
                               behavior: SnackBarBehavior.floating,
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                               margin: const EdgeInsets.all(16),
@@ -471,6 +476,81 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         },
                       ),
                     ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Apariencia
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: colors.card,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: colors.border),
+                  ),
+                  child: ListenableBuilder(
+                    listenable: ThemeProvider.instance,
+                    builder: (ctx, _) {
+                      final provider = ThemeProvider.instance;
+                      final isDark = provider.isDark ||
+                          (provider.isSystem &&
+                              MediaQuery.platformBrightnessOf(ctx) ==
+                                  Brightness.dark);
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 4),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                color: colors.secondary,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Icon(
+                                isDark
+                                    ? Icons.dark_mode_rounded
+                                    : Icons.light_mode_rounded,
+                                size: 18,
+                                color: colors.foreground,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Modo oscuro',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: colors.foreground,
+                                    ),
+                                  ),
+                                  Text(
+                                    isDark ? 'Activado' : 'Desactivado',
+                                    style: TextStyle(
+                                        fontSize: 11,
+                                        color: colors.mutedForeground),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Switch(
+                              value: isDark,
+                              onChanged: (_) =>
+                                  ThemeProvider.instance.toggleTheme(),
+                              activeThumbColor: colors.primary,
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),
@@ -486,23 +566,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     decoration: BoxDecoration(
-                      color: AppColors.destructive.withValues(alpha: 0.06),
+                      color: colors.destructive.withValues(alpha: 0.06),
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color: AppColors.destructive.withValues(alpha: 0.2),
+                        color: colors.destructive.withValues(alpha: 0.2),
                       ),
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.logout_rounded, size: 18, color: AppColors.destructive),
-                        SizedBox(width: 8),
+                        Icon(Icons.logout_rounded, size: 18, color: colors.destructive),
+                        const SizedBox(width: 8),
                         Text(
-                          'Cerrar sesion',
+                          'Cerrar sesión',
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
-                            color: AppColors.destructive,
+                            color: colors.destructive,
                           ),
                         ),
                       ],
@@ -570,6 +650,7 @@ class _ProfileField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
       child: Column(
@@ -577,18 +658,18 @@ class _ProfileField extends StatelessWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: AppColors.mutedForeground,
+              color: colors.mutedForeground,
             ),
           ),
           const SizedBox(height: 6),
           Container(
             decoration: BoxDecoration(
-              color: enabled ? AppColors.card : AppColors.secondary,
+              color: enabled ? colors.card : colors.secondary,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.border),
+              border: Border.all(color: colors.border),
             ),
             child: TextField(
               controller: controller,
@@ -597,12 +678,12 @@ class _ProfileField extends StatelessWidget {
               keyboardType: keyboardType,
               style: TextStyle(
                 fontSize: 14,
-                color: enabled ? AppColors.foreground : AppColors.mutedForeground,
+                color: enabled ? colors.foreground : colors.mutedForeground,
               ),
               decoration: InputDecoration(
                 prefixIcon: Padding(
                   padding: const EdgeInsets.only(left: 12, right: 8),
-                  child: Icon(icon, size: 18, color: AppColors.mutedForeground),
+                  child: Icon(icon, size: 18, color: colors.mutedForeground),
                 ),
                 prefixIconConstraints: const BoxConstraints(minWidth: 40, minHeight: 40),
                 border: InputBorder.none,
@@ -634,6 +715,7 @@ class _MenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
@@ -645,10 +727,10 @@ class _MenuItem extends StatelessWidget {
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                color: AppColors.secondary,
+                color: colors.secondary,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(icon, size: 18, color: AppColors.foreground),
+              child: Icon(icon, size: 18, color: colors.foreground),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -657,20 +739,20 @@ class _MenuItem extends StatelessWidget {
                 children: [
                   Text(
                     label,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.foreground,
+                      color: colors.foreground,
                     ),
                   ),
                   Text(
                     subtitle,
-                    style: const TextStyle(fontSize: 11, color: AppColors.mutedForeground),
+                    style: TextStyle(fontSize: 11, color: colors.mutedForeground),
                   ),
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right_rounded, size: 20, color: AppColors.mutedForeground),
+            Icon(Icons.chevron_right_rounded, size: 20, color: colors.mutedForeground),
           ],
         ),
       ),

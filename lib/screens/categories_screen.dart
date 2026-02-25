@@ -4,6 +4,7 @@ import '../services/product_service.dart';
 import '../services/auth_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/product_card.dart';
+import 'login_screen.dart';
 
 class CategoriesScreen extends StatefulWidget {
   const CategoriesScreen({super.key});
@@ -84,7 +85,14 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   }
 
   Future<void> _onToggleFavorite(int productId) async {
-    if (_userId == 0) return;
+    if (_userId == 0) {
+      if (mounted) {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const LoginScreen()),
+        );
+      }
+      return;
+    }
     final result = await ProductService.toggleFavorite(
       userId: _userId,
       productId: productId,
@@ -147,8 +155,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -165,14 +174,14 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: AppColors.card,
+                        color: colors.card,
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.border),
+                        border: Border.all(color: colors.border),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.arrow_back_rounded,
                         size: 20,
-                        color: AppColors.foreground,
+                        color: colors.foreground,
                       ),
                     ),
                   ),
@@ -187,9 +196,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                         ),
                         Text(
                           '${_products.length} productos',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 12,
-                            color: AppColors.mutedForeground,
+                            color: colors.mutedForeground,
                           ),
                         ),
                       ],
@@ -201,7 +210,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Categorias',
+                    'Categorías',
                     style: Theme.of(context).textTheme.displayMedium?.copyWith(
                       fontSize: 26,
                       letterSpacing: -0.5,
@@ -221,8 +230,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             // Content
             Expanded(
               child: _selectedCategoryId != null
-                  ? _buildProductsList()
-                  : _buildCategoriesGrid(),
+                  ? _buildProductsList(colors)
+                  : _buildCategoriesGrid(colors),
             ),
           ],
         ),
@@ -230,7 +239,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     );
   }
 
-  Widget _buildCategoriesGrid() {
+  Widget _buildCategoriesGrid(DynamicColors colors) {
     if (_loadingCategories) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -240,11 +249,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.category_outlined, size: 48, color: AppColors.mutedForeground.withValues(alpha: 0.5)),
+            Icon(Icons.category_outlined, size: 48, color: colors.mutedForeground.withValues(alpha: 0.5)),
             const SizedBox(height: 12),
-            const Text(
-              'No hay categorias disponibles',
-              style: TextStyle(color: AppColors.mutedForeground, fontSize: 14),
+            Text(
+              'No hay categorías disponibles',
+              style: TextStyle(color: colors.mutedForeground, fontSize: 14),
             ),
           ],
         ),
@@ -256,7 +265,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       child: ListView.separated(
         physics: const BouncingScrollPhysics(),
         itemCount: _categories.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 10),
+        separatorBuilder: (_, _) => const SizedBox(height: 10),
         itemBuilder: (context, index) {
           final cat = _categories[index];
           final color = _colorForIndex(index);
@@ -267,9 +276,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             child: Container(
               height: 80,
               decoration: BoxDecoration(
-                color: AppColors.card,
+                color: colors.card,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.border),
+                border: Border.all(color: colors.border),
               ),
               child: Stack(
                 children: [
@@ -311,20 +320,20 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                             children: [
                               Text(
                                 cat.nombre,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w700,
-                                  color: AppColors.foreground,
+                                  color: colors.foreground,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
                               const SizedBox(height: 2),
-                              const Text(
+                              Text(
                                 'Ver productos',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: AppColors.mutedForeground,
+                                  color: colors.mutedForeground,
                                 ),
                               ),
                             ],
@@ -343,7 +352,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     );
   }
 
-  Widget _buildProductsList() {
+  Widget _buildProductsList(DynamicColors colors) {
     if (_loadingProducts) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -353,11 +362,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.inventory_2_outlined, size: 48, color: AppColors.mutedForeground.withValues(alpha: 0.5)),
+            Icon(Icons.inventory_2_outlined, size: 48, color: colors.mutedForeground.withValues(alpha: 0.5)),
             const SizedBox(height: 12),
-            const Text(
+            Text(
               'No hay productos en esta categoria',
-              style: TextStyle(color: AppColors.mutedForeground, fontSize: 14),
+              style: TextStyle(color: colors.mutedForeground, fontSize: 14),
             ),
           ],
         ),

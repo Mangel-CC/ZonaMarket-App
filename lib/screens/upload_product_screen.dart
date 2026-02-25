@@ -65,9 +65,10 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
   }
 
   void _showImageSourceSheet() {
+    final colors = context.colors;
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.card,
+      backgroundColor: colors.card,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -82,7 +83,7 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                 height: 4,
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
-                  color: AppColors.border,
+                  color: colors.border,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -91,7 +92,7 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                 style: GoogleFonts.dmSans(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.foreground,
+                  color: colors.foreground,
                 ),
               ),
               const SizedBox(height: 16),
@@ -162,10 +163,11 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
   }
 
   void _showSnack(String msg, {bool isError = false}) {
+    final colors = context.colors;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(msg),
-        backgroundColor: isError ? AppColors.destructive : AppColors.accent,
+        backgroundColor: isError ? colors.destructive : colors.accent,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         margin: const EdgeInsets.all(16),
@@ -173,17 +175,32 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
     );
   }
 
+  InputDecoration _inputDecoration(DynamicColors colors, {required String hint, IconData? icon}) {
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: TextStyle(color: colors.mutedForeground, fontSize: 14),
+      prefixIcon: icon != null
+          ? Padding(
+              padding: const EdgeInsets.only(left: 12, right: 8),
+              child: Icon(icon, size: 18, color: colors.mutedForeground),
+            )
+          : null,
+      prefixIconConstraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.card,
+        backgroundColor: colors.card,
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
-          color: AppColors.foreground,
+          color: colors.foreground,
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -191,12 +208,12 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
           style: GoogleFonts.dmSans(
             fontSize: 18,
             fontWeight: FontWeight.w700,
-            color: AppColors.foreground,
+            color: colors.foreground,
           ),
         ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Container(height: 1, color: AppColors.border),
+          child: Container(height: 1, color: colors.border),
         ),
       ),
       body: SingleChildScrollView(
@@ -215,12 +232,12 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                   width: double.infinity,
                   height: 200,
                   decoration: BoxDecoration(
-                    color: AppColors.card,
+                    color: colors.card,
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                       color: _selectedImage != null
-                          ? AppColors.primary
-                          : AppColors.border,
+                          ? colors.primary
+                          : colors.border,
                       width: _selectedImage != null ? 2 : 1,
                     ),
                   ),
@@ -235,14 +252,14 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                             Container(
                               width: 56,
                               height: 56,
-                              decoration: const BoxDecoration(
-                                color: AppColors.primaryLight,
+                              decoration: BoxDecoration(
+                                color: colors.primaryLight,
                                 shape: BoxShape.circle,
                               ),
-                              child: const Icon(
+                              child: Icon(
                                 Icons.add_photo_alternate_outlined,
                                 size: 28,
-                                color: AppColors.primary,
+                                color: colors.primary,
                               ),
                             ),
                             const SizedBox(height: 12),
@@ -251,7 +268,7 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                               style: GoogleFonts.inter(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
-                                color: AppColors.primary,
+                                color: colors.primary,
                               ),
                             ),
                             const SizedBox(height: 4),
@@ -259,7 +276,7 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                               'JPG, PNG o WEBP',
                               style: GoogleFonts.inter(
                                 fontSize: 12,
-                                color: AppColors.mutedForeground,
+                                color: colors.mutedForeground,
                               ),
                             ),
                           ],
@@ -273,13 +290,13 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.edit_outlined, size: 14, color: AppColors.primary),
+                      Icon(Icons.edit_outlined, size: 14, color: colors.primary),
                       const SizedBox(width: 4),
                       Text(
                         'Cambiar foto',
                         style: GoogleFonts.inter(
                           fontSize: 12,
-                          color: AppColors.primary,
+                          color: colors.primary,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -292,9 +309,9 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
               // ── Product Info ──────────────────────────────
               Container(
                 decoration: BoxDecoration(
-                  color: AppColors.card,
+                  color: colors.card,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: AppColors.border),
+                  border: Border.all(color: colors.border),
                 ),
                 padding: const EdgeInsets.all(16),
                 child: Column(
@@ -309,8 +326,9 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                     const SizedBox(height: 6),
                     TextFormField(
                       controller: _nombreController,
-                      style: const TextStyle(fontSize: 14, color: AppColors.foreground),
+                      style: TextStyle(fontSize: 14, color: colors.foreground),
                       decoration: _inputDecoration(
+                        colors,
                         hint: 'Ej: Camiseta azul talla M',
                         icon: Icons.label_outline_rounded,
                       ),
@@ -323,8 +341,9 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                     TextFormField(
                       controller: _descripcionController,
                       maxLines: 3,
-                      style: const TextStyle(fontSize: 14, color: AppColors.foreground),
+                      style: TextStyle(fontSize: 14, color: colors.foreground),
                       decoration: _inputDecoration(
+                        colors,
                         hint: 'Describe tu producto, estado, características...',
                       ),
                       validator: (v) =>
@@ -338,9 +357,9 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
               // ── Precio & Cantidad ─────────────────────────
               Container(
                 decoration: BoxDecoration(
-                  color: AppColors.card,
+                  color: colors.card,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: AppColors.border),
+                  border: Border.all(color: colors.border),
                 ),
                 padding: const EdgeInsets.all(16),
                 child: Column(
@@ -364,9 +383,10 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                                 controller: _precioController,
                                 keyboardType: const TextInputType.numberWithOptions(
                                     decimal: true),
-                                style: const TextStyle(
-                                    fontSize: 14, color: AppColors.foreground),
+                                style: TextStyle(
+                                    fontSize: 14, color: colors.foreground),
                                 decoration: _inputDecoration(
+                                  colors,
                                   hint: '0.00',
                                   icon: Icons.attach_money_rounded,
                                 ),
@@ -391,9 +411,10 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                               TextFormField(
                                 controller: _cantidadController,
                                 keyboardType: TextInputType.number,
-                                style: const TextStyle(
-                                    fontSize: 14, color: AppColors.foreground),
+                                style: TextStyle(
+                                    fontSize: 14, color: colors.foreground),
                                 decoration: _inputDecoration(
+                                  colors,
                                   hint: '1',
                                   icon: Icons.inventory_2_outlined,
                                 ),
@@ -418,9 +439,9 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
               // ── Categoria ─────────────────────────────────
               Container(
                 decoration: BoxDecoration(
-                  color: AppColors.card,
+                  color: colors.card,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: AppColors.border),
+                  border: Border.all(color: colors.border),
                 ),
                 padding: const EdgeInsets.all(16),
                 child: Column(
@@ -440,9 +461,9 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                           )
                         : Container(
                             decoration: BoxDecoration(
-                              color: AppColors.secondary,
+                              color: colors.secondary,
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: AppColors.border),
+                              border: Border.all(color: colors.border),
                             ),
                             padding: const EdgeInsets.symmetric(horizontal: 12),
                             child: DropdownButtonHideUnderline(
@@ -450,25 +471,25 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                                 value: _selectedCategory,
                                 hint: Row(
                                   children: [
-                                    const Icon(
+                                    Icon(
                                       Icons.category_outlined,
                                       size: 18,
-                                      color: AppColors.mutedForeground,
+                                      color: colors.mutedForeground,
                                     ),
                                     const SizedBox(width: 8),
                                     Text(
                                       'Selecciona una categoria',
                                       style: GoogleFonts.inter(
                                         fontSize: 14,
-                                        color: AppColors.mutedForeground,
+                                        color: colors.mutedForeground,
                                       ),
                                     ),
                                   ],
                                 ),
                                 isExpanded: true,
-                                icon: const Icon(
+                                icon: Icon(
                                   Icons.keyboard_arrow_down_rounded,
-                                  color: AppColors.mutedForeground,
+                                  color: colors.mutedForeground,
                                 ),
                                 items: _categories.map((cat) {
                                   return DropdownMenuItem<Category>(
@@ -477,7 +498,7 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                                       cat.nombre,
                                       style: GoogleFonts.inter(
                                         fontSize: 14,
-                                        color: AppColors.foreground,
+                                        color: colors.foreground,
                                       ),
                                     ),
                                   );
@@ -499,9 +520,9 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                 child: ElevatedButton(
                   onPressed: _isLoading ? null : _submit,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
+                    backgroundColor: colors.primary,
                     foregroundColor: Colors.white,
-                    disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.6),
+                    disabledBackgroundColor: colors.primary.withValues(alpha: 0.6),
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
@@ -540,20 +561,6 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
       ),
     );
   }
-
-  InputDecoration _inputDecoration({required String hint, IconData? icon}) {
-    return InputDecoration(
-      hintText: hint,
-      hintStyle: const TextStyle(color: AppColors.mutedForeground, fontSize: 14),
-      prefixIcon: icon != null
-          ? Padding(
-              padding: const EdgeInsets.only(left: 12, right: 8),
-              child: Icon(icon, size: 18, color: AppColors.mutedForeground),
-            )
-          : null,
-      prefixIconConstraints: const BoxConstraints(minWidth: 40, minHeight: 40),
-    );
-  }
 }
 
 // ── Helper Widgets ─────────────────────────────────────────────────────────────
@@ -564,14 +571,15 @@ class _SectionLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Text(
         label,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 13,
           fontWeight: FontWeight.w600,
-          color: AppColors.foreground,
+          color: colors.foreground,
         ),
       ),
     );
@@ -584,12 +592,13 @@ class _FieldLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Text(
       label,
-      style: const TextStyle(
+      style: TextStyle(
         fontSize: 12,
         fontWeight: FontWeight.w600,
-        color: AppColors.mutedForeground,
+        color: colors.mutedForeground,
       ),
     );
   }
@@ -608,27 +617,28 @@ class _ImageSourceButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 20),
         decoration: BoxDecoration(
-          color: AppColors.primaryLight,
+          color: colors.primaryLight,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: AppColors.primary.withValues(alpha: 0.2),
+            color: colors.primary.withValues(alpha: 0.2),
           ),
         ),
         child: Column(
           children: [
-            Icon(icon, size: 28, color: AppColors.primary),
+            Icon(icon, size: 28, color: colors.primary),
             const SizedBox(height: 8),
             Text(
               label,
               style: GoogleFonts.inter(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: AppColors.primary,
+                color: colors.primary,
               ),
             ),
           ],

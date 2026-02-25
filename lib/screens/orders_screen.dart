@@ -55,7 +55,7 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Si, cancelar', style: TextStyle(color: AppColors.destructive)),
+            child: Text('Si, cancelar', style: TextStyle(color: context.colors.destructive)),
           ),
         ],
       ),
@@ -64,10 +64,11 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
     if (confirmed == true) {
       final success = await ProductService.cancelOrder(orderId);
       if (success && mounted) {
+        final colors = context.colors;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text('Orden cancelada'),
-            backgroundColor: AppColors.accent,
+            backgroundColor: colors.accent,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             margin: const EdgeInsets.all(16),
@@ -166,8 +167,9 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -214,10 +216,10 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
                           duration: const Duration(milliseconds: 200),
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           decoration: BoxDecoration(
-                            color: isActive ? AppColors.primary : AppColors.card,
+                            color: isActive ? colors.primary : colors.card,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: isActive ? AppColors.primary : AppColors.border,
+                              color: isActive ? colors.primary : colors.border,
                             ),
                           ),
                           child: Center(
@@ -226,7 +228,7 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
-                                color: isActive ? Colors.white : AppColors.foreground,
+                                color: isActive ? Colors.white : colors.foreground,
                               ),
                             ),
                           ),
@@ -256,12 +258,12 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
                           Icon(
                             Icons.receipt_long_outlined,
                             size: 48,
-                            color: AppColors.mutedForeground.withValues(alpha: 0.5),
+                            color: colors.mutedForeground.withValues(alpha: 0.5),
                           ),
                           const SizedBox(height: 12),
-                          const Text(
+                          Text(
                             'No tienes pedidos aun',
-                            style: TextStyle(color: AppColors.mutedForeground, fontSize: 14),
+                            style: TextStyle(color: colors.mutedForeground, fontSize: 14),
                           ),
                         ],
                       ),
@@ -274,7 +276,7 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       itemCount: orders.length,
                       separatorBuilder: (_, __) => const SizedBox(height: 10),
-                      itemBuilder: (context, index) => _buildOrderCard(orders[index]),
+                      itemBuilder: (context, index) => _buildOrderCard(orders[index], colors),
                     ),
                   );
                 },
@@ -286,7 +288,7 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
     );
   }
 
-  Widget _buildOrderCard(Map<String, dynamic> order) {
+  Widget _buildOrderCard(Map<String, dynamic> order, DynamicColors colors) {
     final status = order['estado'] as String?;
     final color = _statusColor(status);
     final canCancel = status == 'pendiente' || status == 'confirmado';
@@ -294,9 +296,9 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.card,
+        color: colors.card,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: colors.border),
       ),
       child: Column(
         children: [
@@ -309,7 +311,7 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
                   width: 64,
                   height: 64,
                   decoration: BoxDecoration(
-                    color: AppColors.secondary,
+                    color: colors.secondary,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   clipBehavior: Clip.antiAlias,
@@ -317,12 +319,12 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
                       ? Image.network(
                     order['producto_imagen'],
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => const Icon(
+                    errorBuilder: (_, __, ___) => Icon(
                       Icons.image_outlined,
-                      color: AppColors.mutedForeground,
+                      color: colors.mutedForeground,
                     ),
                   )
-                      : const Icon(Icons.image_outlined, color: AppColors.mutedForeground),
+                      : Icon(Icons.image_outlined, color: colors.mutedForeground),
                 ),
                 const SizedBox(width: 12),
 
@@ -333,10 +335,10 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
                     children: [
                       Text(
                         order['producto_nombre'] ?? 'Producto',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.foreground,
+                          color: colors.foreground,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -344,12 +346,12 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
                       const SizedBox(height: 4),
                       Text(
                         'Cantidad: ${order['cantidad'] ?? 1}',
-                        style: const TextStyle(fontSize: 12, color: AppColors.mutedForeground),
+                        style: TextStyle(fontSize: 12, color: colors.mutedForeground),
                       ),
                       const SizedBox(height: 2),
                       Text(
                         _formatDate(order['fecha_creacion']?.toString()),
-                        style: const TextStyle(fontSize: 11, color: AppColors.mutedForeground),
+                        style: TextStyle(fontSize: 11, color: colors.mutedForeground),
                       ),
                     ],
                   ),
@@ -361,10 +363,10 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
                   children: [
                     Text(
                       _formatPrice(order['total']),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.primary,
+                        color: colors.primary,
                       ),
                     ),
                     const SizedBox(height: 6),
@@ -398,23 +400,23 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
 
           // Cancel Button
           if (canCancel) ...[
-            const Divider(height: 1, color: AppColors.border),
+            Divider(height: 1, color: colors.border),
             GestureDetector(
               onTap: () => _cancelOrder(orderId),
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 10),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.cancel_outlined, size: 14, color: AppColors.destructive),
-                    SizedBox(width: 6),
+                    Icon(Icons.cancel_outlined, size: 14, color: colors.destructive),
+                    const SizedBox(width: 6),
                     Text(
                       'Cancelar pedido',
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.destructive,
+                        color: colors.destructive,
                       ),
                     ),
                   ],

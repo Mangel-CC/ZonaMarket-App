@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'theme/app_theme.dart';
-import 'screens/login_screen.dart';
+import 'theme/theme_provider.dart';
 import 'screens/main_shell.dart';
 import 'services/auth_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  // Initial overlay style — updated reactively by ZonaMarketApp
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -23,11 +24,19 @@ class ZonaMarketApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'ZonaMarket',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      home: const _SplashGate(),
+    return ListenableBuilder(
+      listenable: ThemeProvider.instance,
+      builder: (ctx, _) {
+        final mode = ThemeProvider.instance.themeMode;
+        return MaterialApp(
+          title: 'ZonaMarket',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: mode,
+          home: const _SplashGate(),
+        );
+      },
     );
   }
 }
@@ -48,14 +57,14 @@ class _SplashGateState extends State<_SplashGate> {
   }
 
   Future<void> _checkSession() async {
-    final loggedIn = await AuthService.isLoggedIn();
+    // Validate token only to discard expired sessions stored locally
+    await AuthService.isLoggedIn();
     if (!mounted) return;
 
-    final destination = loggedIn ? const MainShell() : const LoginScreen();
-
+    // Always go to MainShell — protected tabs redirect to login as needed
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
-        pageBuilder: (_, __, ___) => destination,
+        pageBuilder: (_, __, ___) => const MainShell(),
         transitionDuration: Duration.zero,
       ),
     );
@@ -63,9 +72,9 @@ class _SplashGateState extends State<_SplashGate> {
 
   @override
   Widget build(BuildContext context) {
-    // Simple splash while checking session
+    final colors = context.colors;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -74,7 +83,7 @@ class _SplashGateState extends State<_SplashGate> {
               width: 72,
               height: 72,
               decoration: BoxDecoration(
-                color: AppColors.primary,
+                color: colors.primary,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: const Center(
@@ -90,12 +99,12 @@ class _SplashGateState extends State<_SplashGate> {
               ),
             ),
             const SizedBox(height: 20),
-            const SizedBox(
+            SizedBox(
               width: 24,
               height: 24,
               child: CircularProgressIndicator(
                 strokeWidth: 2.5,
-                color: AppColors.primary,
+                color: colors.primary,
               ),
             ),
           ],

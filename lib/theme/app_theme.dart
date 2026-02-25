@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppColors {
@@ -170,10 +171,25 @@ class AppTheme {
     );
   }
 
+  static SystemUiOverlayStyle overlayStyleFor(ThemeMode mode, BuildContext ctx) {
+    final isDark = mode == ThemeMode.dark ||
+        (mode == ThemeMode.system &&
+            MediaQuery.platformBrightnessOf(ctx) == Brightness.dark);
+    return SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+      systemNavigationBarColor:
+          isDark ? AppColors.darkCard : Colors.white,
+      systemNavigationBarIconBrightness:
+          isDark ? Brightness.light : Brightness.dark,
+    );
+  }
+
   static TextTheme _buildTextTheme(Brightness brightness) {
     final color = brightness == Brightness.light
         ? AppColors.foreground
         : AppColors.darkForeground;
+
     final mutedColor = brightness == Brightness.light
         ? AppColors.mutedForeground
         : AppColors.darkMutedForeground;
@@ -237,5 +253,44 @@ class AppTheme {
         color: mutedColor,
       ),
     );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Dynamic color accessor — returns light or dark color based on current theme.
+// Usage:  context.colors.background  /  context.colors.card  / etc.
+// ---------------------------------------------------------------------------
+
+class DynamicColors {
+  const DynamicColors._(this.isDark);
+  final bool isDark;
+
+  // Adaptive
+  Color get background => isDark ? AppColors.darkBackground : AppColors.background;
+  Color get foreground => isDark ? AppColors.darkForeground : AppColors.foreground;
+  Color get card => isDark ? AppColors.darkCard : AppColors.card;
+  Color get cardForeground => isDark ? AppColors.darkCardForeground : AppColors.cardForeground;
+  Color get border => isDark ? AppColors.darkBorder : AppColors.border;
+  Color get muted => isDark ? AppColors.darkMuted : AppColors.muted;
+  Color get mutedForeground => isDark ? AppColors.darkMutedForeground : AppColors.mutedForeground;
+  Color get secondary => isDark ? AppColors.darkSecondary : AppColors.secondary;
+  Color get secondaryForeground => isDark ? AppColors.darkSecondaryForeground : AppColors.secondaryForeground;
+  Color get primaryLight => isDark ? AppColors.darkPrimaryLight : AppColors.primaryLight;
+
+  // Fixed (same in both modes)
+  Color get primary => AppColors.primary;
+  Color get primaryForeground => AppColors.primaryForeground;
+  Color get accent => AppColors.accent;
+  Color get accentLight => AppColors.accentLight;
+  Color get accentForeground => AppColors.accentForeground;
+  Color get destructive => AppColors.destructive;
+  Color get chartOrange => AppColors.chartOrange;
+  Color get chartBlue => AppColors.chartBlue;
+}
+
+extension AppColorsContext on BuildContext {
+  DynamicColors get colors {
+    final isDark = Theme.of(this).brightness == Brightness.dark;
+    return DynamicColors._(isDark);
   }
 }

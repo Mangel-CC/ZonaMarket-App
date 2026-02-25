@@ -28,6 +28,7 @@ class CategoriesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Column(
@@ -44,12 +45,12 @@ class CategoriesSection extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {},
-                  child: const Text(
+                  child: Text(
                     'Ver todas',
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
-                      color: AppColors.primary,
+                      color: colors.primary,
                     ),
                   ),
                 ),
@@ -118,20 +119,21 @@ class _CategoryChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
       curve: Curves.easeOut,
       width: 80,
       decoration: BoxDecoration(
-        color: isActive ? AppColors.primary : AppColors.card,
+        color: isActive ? colors.primary : colors.card,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: isActive ? AppColors.primary : AppColors.border,
+          color: isActive ? colors.primary : colors.border,
         ),
         boxShadow: isActive
             ? [
           BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.25),
+            color: colors.primary.withValues(alpha: 0.25),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -144,7 +146,7 @@ class _CategoryChip extends StatelessWidget {
           Icon(
             icon,
             size: 22,
-            color: isActive ? Colors.white : AppColors.mutedForeground,
+            color: isActive ? Colors.white : colors.mutedForeground,
           ),
           const SizedBox(height: 6),
           Text(
@@ -152,7 +154,7 @@ class _CategoryChip extends StatelessWidget {
             style: TextStyle(
               fontSize: 11,
               fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
-              color: isActive ? Colors.white : AppColors.mutedForeground,
+              color: isActive ? Colors.white : colors.mutedForeground,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,

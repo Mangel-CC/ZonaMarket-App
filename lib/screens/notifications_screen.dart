@@ -53,44 +53,45 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   }
 
   Future<void> _deleteAll() async {
+    final colors = context.colors;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.card,
+        backgroundColor: colors.card,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text(
+        title: Text(
           'Eliminar notificaciones',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w700,
-            color: AppColors.foreground,
+            color: colors.foreground,
           ),
         ),
-        content: const Text(
+        content: Text(
           'Se eliminaran todas las notificaciones. Esta accion no se puede deshacer.',
           style: TextStyle(
             fontSize: 14,
-            color: AppColors.mutedForeground,
+            color: colors.mutedForeground,
             height: 1.5,
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text(
+            child: Text(
               'Cancelar',
               style: TextStyle(
-                color: AppColors.mutedForeground,
+                color: colors.mutedForeground,
                 fontWeight: FontWeight.w600,
               ),
             ),
           ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text(
+            child: Text(
               'Eliminar',
               style: TextStyle(
-                color: AppColors.destructive,
+                color: colors.destructive,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -152,6 +153,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   }
 
   void _showSnackBar(String message, {bool isError = false}) {
+    final colors = context.colors;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
@@ -162,7 +164,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             fontWeight: FontWeight.w500,
           ),
         ),
-        backgroundColor: isError ? AppColors.destructive : AppColors.accent,
+        backgroundColor: isError ? colors.destructive : colors.accent,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         margin: const EdgeInsets.all(16),
@@ -173,16 +175,17 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: Column(
         children: [
-          _buildAppBar(context),
+          _buildAppBar(context, colors),
           Expanded(
             child: _isLoading
-                ? _buildLoadingState()
+                ? _buildLoadingState(colors)
                 : _notifications.isEmpty
-                ? _buildEmptyState()
+                ? _buildEmptyState(colors)
                 : RefreshIndicator(
               onRefresh: _loadNotifications,
               child: ListView.builder(
@@ -195,6 +198,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   return _buildNotificationItem(
                     _notifications[index],
                     index,
+                    colors,
                   );
                 },
               ),
@@ -205,9 +209,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     );
   }
 
-  Widget _buildAppBar(BuildContext context) {
+  Widget _buildAppBar(BuildContext context, DynamicColors colors) {
     return Container(
-      color: AppColors.card,
+      color: colors.card,
       child: SafeArea(
         bottom: false,
         child: Padding(
@@ -216,10 +220,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             children: [
               IconButton(
                 onPressed: () => Navigator.of(context).pop(),
-                icon: const Icon(
+                icon: Icon(
                   Icons.arrow_back_rounded,
                   size: 22,
-                  color: AppColors.foreground,
+                  color: colors.foreground,
                 ),
               ),
               const SizedBox(width: 4),
@@ -228,30 +232,30 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
+                    Text(
                       'Notificaciones',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.foreground,
+                        color: colors.foreground,
                         letterSpacing: -0.3,
                       ),
                     ),
                     if (!_isLoading && _unreadCount > 0)
                       Text(
                         '$_unreadCount sin leer',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: AppColors.accent,
+                          color: colors.accent,
                           fontWeight: FontWeight.w500,
                         ),
                       )
                     else if (!_isLoading)
                       Text(
                         '${_notifications.length} ${_notifications.length == 1 ? 'notificacion' : 'notificaciones'}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: AppColors.mutedForeground,
+                          color: colors.mutedForeground,
                         ),
                       ),
                   ],
@@ -263,18 +267,18 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   IconButton(
                     onPressed: _isMarkingRead ? null : _markAllRead,
                     icon: _isMarkingRead
-                        ? const SizedBox(
+                        ? SizedBox(
                       width: 18,
                       height: 18,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: AppColors.primary,
+                        color: colors.primary,
                       ),
                     )
-                        : const Icon(
+                        : Icon(
                       Icons.done_all_rounded,
                       size: 22,
-                      color: AppColors.primary,
+                      color: colors.primary,
                     ),
                     tooltip: 'Marcar todo como leido',
                     splashRadius: 20,
@@ -283,18 +287,18 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 IconButton(
                   onPressed: _isDeletingAll ? null : _deleteAll,
                   icon: _isDeletingAll
-                      ? const SizedBox(
+                      ? SizedBox(
                     width: 18,
                     height: 18,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      color: AppColors.destructive,
+                      color: colors.destructive,
                     ),
                   )
-                      : const Icon(
+                      : Icon(
                     Icons.delete_outline_rounded,
                     size: 22,
-                    color: AppColors.destructive,
+                    color: colors.destructive,
                   ),
                   tooltip: 'Eliminar todas',
                   splashRadius: 20,
@@ -307,7 +311,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     );
   }
 
-  Widget _buildLoadingState() {
+  Widget _buildLoadingState(DynamicColors colors) {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -317,9 +321,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             child: Container(
               height: 80,
               decoration: BoxDecoration(
-                color: AppColors.card,
+                color: colors.card,
                 borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: AppColors.border),
+                border: Border.all(color: colors.border),
               ),
               padding: const EdgeInsets.all(14),
               child: Row(
@@ -328,7 +332,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     width: 44,
                     height: 44,
                     decoration: BoxDecoration(
-                      color: AppColors.secondary,
+                      color: colors.secondary,
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
@@ -342,7 +346,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           height: 12,
                           width: double.infinity,
                           decoration: BoxDecoration(
-                            color: AppColors.secondary,
+                            color: colors.secondary,
                             borderRadius: BorderRadius.circular(6),
                           ),
                         ),
@@ -351,7 +355,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           height: 12,
                           width: 100,
                           decoration: BoxDecoration(
-                            color: AppColors.secondary,
+                            color: colors.secondary,
                             borderRadius: BorderRadius.circular(6),
                           ),
                         ),
@@ -367,7 +371,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(DynamicColors colors) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -376,31 +380,31 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             width: 80,
             height: 80,
             decoration: BoxDecoration(
-              color: AppColors.secondary,
+              color: colors.secondary,
               borderRadius: BorderRadius.circular(24),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.notifications_off_outlined,
               size: 36,
-              color: AppColors.mutedForeground,
+              color: colors.mutedForeground,
             ),
           ),
           const SizedBox(height: 20),
-          const Text(
+          Text(
             'Sin notificaciones',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: AppColors.foreground,
+              color: colors.foreground,
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
+          Text(
             'Cuando tengas actividad nueva\naparecera aqui',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 14,
-              color: AppColors.mutedForeground,
+              color: colors.mutedForeground,
               height: 1.5,
             ),
           ),
@@ -409,7 +413,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     );
   }
 
-  Widget _buildNotificationItem(Map<String, dynamic> notif, int index) {
+  Widget _buildNotificationItem(Map<String, dynamic> notif, int index, DynamicColors colors) {
     final id = notif['id'] is int
         ? notif['id'] as int
         : int.tryParse(notif['id']?.toString() ?? '') ?? 0;
@@ -424,7 +428,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       background: Container(
         margin: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
-          color: AppColors.destructive,
+          color: colors.destructive,
           borderRadius: BorderRadius.circular(14),
         ),
         alignment: Alignment.centerRight,
@@ -439,10 +443,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         margin: const EdgeInsets.only(bottom: 10),
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: read ? AppColors.card : AppColors.primaryLight,
+          color: read ? colors.card : colors.primaryLight,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: read ? AppColors.border : AppColors.primary.withValues(alpha: 0.25),
+            color: read ? colors.border : colors.primary.withValues(alpha: 0.25),
           ),
         ),
         child: Row(
@@ -454,8 +458,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               height: 44,
               decoration: BoxDecoration(
                 color: read
-                    ? AppColors.secondary
-                    : AppColors.primary.withValues(alpha: 0.12),
+                    ? colors.secondary
+                    : colors.primary.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
@@ -463,7 +467,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     ? Icons.notifications_none_rounded
                     : Icons.notifications_active_rounded,
                 size: 22,
-                color: read ? AppColors.mutedForeground : AppColors.primary,
+                color: read ? colors.mutedForeground : colors.primary,
               ),
             ),
             const SizedBox(width: 12),
@@ -478,7 +482,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: read ? FontWeight.w400 : FontWeight.w600,
-                      color: AppColors.foreground,
+                      color: colors.foreground,
                       height: 1.4,
                     ),
                     maxLines: 3,
@@ -488,9 +492,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     const SizedBox(height: 6),
                     Text(
                       _formatDate(fecha),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 11,
-                        color: AppColors.mutedForeground,
+                        color: colors.mutedForeground,
                       ),
                     ),
                   ],
@@ -504,8 +508,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 width: 8,
                 height: 8,
                 margin: const EdgeInsets.only(top: 6, left: 8),
-                decoration: const BoxDecoration(
-                  color: AppColors.primary,
+                decoration: BoxDecoration(
+                  color: colors.primary,
                   shape: BoxShape.circle,
                 ),
               ),

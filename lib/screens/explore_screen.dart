@@ -6,6 +6,7 @@ import '../services/product_service.dart';
 import '../services/auth_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/product_card.dart';
+import 'login_screen.dart';
 
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
@@ -169,7 +170,14 @@ class _ExploreScreenState extends State<ExploreScreen> {
   }
 
   Future<void> _onToggleFavorite(int productId) async {
-    if (_userId == 0) return;
+    if (_userId == 0) {
+      if (mounted) {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const LoginScreen()),
+        );
+      }
+      return;
+    }
     final result = await ProductService.toggleFavorite(
       userId: _userId,
       productId: productId,
@@ -200,8 +208,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -228,29 +237,29 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   // Search Bar
                   Container(
                     decoration: BoxDecoration(
-                      color: AppColors.card,
+                      color: colors.card,
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: AppColors.border),
+                      border: Border.all(color: colors.border),
                     ),
                     child: TextField(
                       controller: _searchController,
                       onChanged: _onSearchChanged,
                       onSubmitted: _onSearchSubmitted,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         hintText: 'Buscar productos, servicios...',
                         hintStyle: TextStyle(
-                          color: AppColors.mutedForeground,
+                          color: colors.mutedForeground,
                           fontSize: 14,
                         ),
                         prefixIcon: Padding(
-                          padding: EdgeInsets.only(left: 12, right: 8),
-                          child: Icon(Icons.search_rounded, size: 20, color: AppColors.mutedForeground),
+                          padding: const EdgeInsets.only(left: 12, right: 8),
+                          child: Icon(Icons.search_rounded, size: 20, color: colors.mutedForeground),
                         ),
-                        prefixIconConstraints: BoxConstraints(minWidth: 40, minHeight: 40),
+                        prefixIconConstraints: const BoxConstraints(minWidth: 40, minHeight: 40),
                         border: InputBorder.none,
                         enabledBorder: InputBorder.none,
                         focusedBorder: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(vertical: 12),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                     ),
                   ),
@@ -279,16 +288,16 @@ class _ExploreScreenState extends State<ExploreScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Busquedas recientes',
+                                'Búsquedas recientes',
                                 style: Theme.of(context).textTheme.titleSmall,
                               ),
                               GestureDetector(
                                 onTap: _clearRecentSearches,
-                                child: const Text(
+                                child: Text(
                                   'Limpiar',
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: AppColors.primary,
+                                    color: colors.primary,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -311,20 +320,20 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                                   decoration: BoxDecoration(
-                                    color: AppColors.card,
+                                    color: colors.card,
                                     borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: AppColors.border),
+                                    border: Border.all(color: colors.border),
                                   ),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      const Icon(Icons.history_rounded, size: 14, color: AppColors.mutedForeground),
+                                      Icon(Icons.history_rounded, size: 14, color: colors.mutedForeground),
                                       const SizedBox(width: 6),
                                       Text(
                                         term,
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontSize: 12,
-                                          color: AppColors.foreground,
+                                          color: colors.foreground,
                                           fontWeight: FontWeight.w500,
                                         ),
                                       ),
@@ -332,7 +341,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                       GestureDetector(
                                         onTap: () => _removeRecentSearch(term),
                                         behavior: HitTestBehavior.opaque,
-                                        child: const Icon(Icons.close_rounded, size: 14, color: AppColors.mutedForeground),
+                                        child: Icon(Icons.close_rounded, size: 14, color: colors.mutedForeground),
                                       ),
                                     ],
                                   ),
@@ -370,10 +379,10 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                   duration: const Duration(milliseconds: 200),
                                   padding: const EdgeInsets.symmetric(horizontal: 14),
                                   decoration: BoxDecoration(
-                                    color: isActive ? AppColors.primary : AppColors.card,
+                                    color: isActive ? colors.primary : colors.card,
                                     borderRadius: BorderRadius.circular(12),
                                     border: Border.all(
-                                      color: isActive ? AppColors.primary : AppColors.border,
+                                      color: isActive ? colors.primary : colors.border,
                                     ),
                                   ),
                                   child: Row(
@@ -382,7 +391,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                       Icon(
                                         _iconForCategory(cat.nombre),
                                         size: 16,
-                                        color: isActive ? Colors.white : AppColors.mutedForeground,
+                                        color: isActive ? Colors.white : colors.mutedForeground,
                                       ),
                                       const SizedBox(width: 6),
                                       Text(
@@ -390,7 +399,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                         style: TextStyle(
                                           fontSize: 12,
                                           fontWeight: FontWeight.w600,
-                                          color: isActive ? Colors.white : AppColors.foreground,
+                                          color: isActive ? Colors.white : colors.foreground,
                                         ),
                                       ),
                                     ],
@@ -417,9 +426,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
                             ),
                             Text(
                               '${_products.length} encontrados',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 12,
-                                color: AppColors.mutedForeground,
+                                color: colors.mutedForeground,
                               ),
                             ),
                           ],
@@ -442,12 +451,12 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                 Icon(
                                   Icons.search_off_rounded,
                                   size: 48,
-                                  color: AppColors.mutedForeground.withValues(alpha: 0.5),
+                                  color: colors.mutedForeground.withValues(alpha: 0.5),
                                 ),
                                 const SizedBox(height: 12),
-                                const Text(
+                                Text(
                                   'No se encontraron productos',
-                                  style: TextStyle(color: AppColors.mutedForeground, fontSize: 14),
+                                  style: TextStyle(color: colors.mutedForeground, fontSize: 14),
                                 ),
                               ],
                             ),

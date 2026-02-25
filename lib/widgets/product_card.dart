@@ -42,13 +42,14 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return GestureDetector(
       onTap: () => _openDetail(context),
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.card,
+          color: colors.card,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: colors.border),
         ),
         clipBehavior: Clip.antiAlias,
         child: Column(
@@ -61,7 +62,7 @@ class ProductCard extends StatelessWidget {
                 children: [
                   Container(
                     width: double.infinity,
-                    color: AppColors.secondary,
+                    color: colors.secondary,
                     child: product.imagen != null && product.imagen!.isNotEmpty
                         ? Image.network(
                       product.imagen!,
@@ -83,7 +84,7 @@ class ProductCard extends StatelessWidget {
                           child: Icon(
                             Icons.image_outlined,
                             size: 32,
-                            color: AppColors.mutedForeground
+                            color: colors.mutedForeground
                                 .withValues(alpha: 0.4),
                           ),
                         );
@@ -94,7 +95,7 @@ class ProductCard extends StatelessWidget {
                         Icons.image_outlined,
                         size: 32,
                         color:
-                        AppColors.mutedForeground.withValues(alpha: 0.4),
+                        colors.mutedForeground.withValues(alpha: 0.4),
                       ),
                     ),
                   ),
@@ -108,7 +109,7 @@ class ProductCard extends StatelessWidget {
                         width: 28,
                         height: 28,
                         decoration: BoxDecoration(
-                          color: AppColors.card.withValues(alpha: 0.85),
+                          color: colors.card.withValues(alpha: 0.85),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
@@ -117,8 +118,8 @@ class ProductCard extends StatelessWidget {
                               : Icons.favorite_outline_rounded,
                           size: 14,
                           color: isFavorite
-                              ? AppColors.destructive
-                              : AppColors.mutedForeground,
+                              ? colors.destructive
+                              : colors.mutedForeground,
                         ),
                       ),
                     ),
@@ -136,10 +137,10 @@ class ProductCard extends StatelessWidget {
                     Expanded(
                       child: Text(
                         product.nombre,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.foreground,
+                          color: colors.foreground,
                           height: 1.2,
                         ),
                         maxLines: 2,
@@ -153,10 +154,10 @@ class ProductCard extends StatelessWidget {
                         Flexible(
                           child: Text(
                             _formatPrice(product.precio),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w700,
-                              color: AppColors.primary,
+                              color: colors.primary,
                             ),
                           ),
                         ),
@@ -166,7 +167,7 @@ class ProductCard extends StatelessWidget {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.primary,
+                            color: colors.primary,
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: const Text(
