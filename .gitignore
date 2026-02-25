@@ -62,8 +62,6 @@ flutter_export_environment.sh
 /ios/Flutter/flutter_export_environment.sh
 /ios/Flutter/Generated.xcconfig
 
-# Web
-/web/
 
 # macOS
 /macos/Flutter/GeneratedPluginRegistrant.swift
