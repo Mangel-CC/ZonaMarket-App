@@ -79,6 +79,27 @@ class ProductService {
     }
   }
 
+  /// Fetch product reviews. No auth required.
+  /// Returns an empty list if there are no reviews or on error.
+  static Future<List<Map<String, dynamic>>> getProductReviews(int productId) async {
+    try {
+      final response = await http.get(
+        Uri.parse('${ApiConfig.productDetailEndpoint}/$productId/reviews'),
+        headers: {'Accept': 'application/json'},
+      ).timeout(ApiConfig.timeout);
+
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body);
+        if (decoded is List) {
+          return decoded.cast<Map<String, dynamic>>();
+        }
+      }
+      return [];
+    } catch (e) {
+      return [];
+    }
+  }
+
   /// Toggle product favorite status. Auth required.
   /// Returns a map with 'success' and 'is_favorito' keys, or null on failure.
   static Future<Map<String, dynamic>?> toggleFavorite({

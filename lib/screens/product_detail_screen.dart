@@ -21,6 +21,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   bool _addingToCart = false;
   int _userId = 0;
   int _cantidad = 1;
+  List<Map<String, dynamic>> _reviews = [];
+  bool _reviewsLoading = false;
+  double _avgRating = 0;
+  int _totalReviews = 0;
+  Map<String, int> _ratingDistribution = {};
 
   @override
   void initState() {
@@ -32,6 +37,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     await Future.wait([
       _loadDetail(),
       _loadUserId(),
+      _loadReviews(),
     ]);
   }
 
@@ -45,6 +51,20 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         if (data != null) {
           _isFavorite = data['is_favorito'] == true || data['is_favorito'] == 1;
         }
+      });
+    }
+  }
+
+  Future<void> _loadReviews() async {
+    setState(() => _reviewsLoading = true);
+    final reviews = await ProductService.getProductReviews(widget.product.id);
+    if (mounted) {
+      setState(() {
+        _reviewsLoading = false;
+        _reviews = reviews;
+        _totalReviews = reviews.length;
+        _avgRating = _computeAvg(reviews);
+        _ratingDistribution = _computeDistribution(reviews);
       });
     }
   }
@@ -439,6 +459,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             ),
                           ],
 
+                          // Reviews section
+                          const SizedBox(height: 24),
+                          _buildReviewsSection(colors),
+
                           // Loading state for detail
                           if (_isLoading) ...[
                             const SizedBox(height: 24),
@@ -559,6 +583,317 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  // ── Reviews helpers ─────────────────────────────────────────────────────
+
+  double _computeAvg(List<Map<String, dynamic>> reviews) {
+    if (reviews.isEmpty) return 0;
+    final sum = reviews.fold<double>(
+      0,
+      (acc, r) => acc + ((r['calificacion'] as num?)?.toDouble() ?? 0),
+    );
+    return sum / reviews.length;
+  }
+
+  Map<String, int> _computeDistribution(List<Map<String, dynamic>> reviews) {
+    final dist = <String, int>{'5': 0, '4': 0, '3': 0, '2': 0, '1': 0};
+    for (final r in reviews) {
+      final cal = (r['calificacion'] as num?)?.toInt() ?? 0;
+      final key = cal.clamp(1, 5).toString();
+      dist[key] = (dist[key] ?? 0) + 1;
+    }
+    return dist;
+  }
+
+  String _formatReviewDate(String dateStr) {
+    try {
+      final date = DateTime.parse(dateStr);
+      final diff = DateTime.now().difference(date);
+      if (diff.inDays == 0) return 'Hoy';
+      if (diff.inDays == 1) return 'Ayer';
+      if (diff.inDays < 7) return 'Hace ${diff.inDays} días';
+      if (diff.inDays < 30) return 'Hace ${(diff.inDays / 7).floor()} sem';
+      return '${date.day}/${date.month}/${date.year}';
+    } catch (_) {
+      return dateStr;
+    }
+  }
+
+  Widget _buildStars(double rating, {double size = 16}) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(5, (i) {
+        final filled = rating >= i + 1;
+        final half = !filled && rating >= i + 0.5;
+        return Icon(
+          filled
+              ? Icons.star_rounded
+              : half
+                  ? Icons.star_half_rounded
+                  : Icons.star_outline_rounded,
+          size: size,
+          color: const Color(0xFFFFC107),
+        );
+      }),
+    );
+  }
+
+  Widget _buildRatingBar(int star, DynamicColors colors) {
+    final count = _ratingDistribution[star.toString()] ?? 0;
+    final pct = _totalReviews > 0 ? count / _totalReviews : 0.0;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2.5),
+      child: Row(
+        children: [
+          Text(
+            '$star',
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: colors.mutedForeground,
+            ),
+          ),
+          const SizedBox(width: 3),
+          Icon(Icons.star_rounded, size: 11, color: const Color(0xFFFFC107)),
+          const SizedBox(width: 6),
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: LinearProgressIndicator(
+                value: pct,
+                minHeight: 6,
+                backgroundColor: colors.muted,
+                valueColor:
+                    const AlwaysStoppedAnimation<Color>(Color(0xFFFFC107)),
+              ),
+            ),
+          ),
+          const SizedBox(width: 6),
+          SizedBox(
+            width: 22,
+            child: Text(
+              '$count',
+              style: TextStyle(fontSize: 11, color: colors.mutedForeground),
+              textAlign: TextAlign.end,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReviewCard(Map<String, dynamic> review, DynamicColors colors) {
+    final nombre = review['autor'] as String? ?? 'Usuario';
+    final calificacion = (review['calificacion'] as num?)?.toDouble() ?? 0;
+    final comentario = review['comentario'] as String? ?? '';
+    final fecha = review['fecha'] as String? ?? '';
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: colors.card,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: colors.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: colors.primaryLight,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Center(
+                  child: Text(
+                    nombre.isNotEmpty ? nombre[0].toUpperCase() : '?',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: colors.primary,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      nombre,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: colors.foreground,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    _buildStars(calificacion, size: 13),
+                  ],
+                ),
+              ),
+              if (fecha.isNotEmpty)
+                Text(
+                  _formatReviewDate(fecha),
+                  style:
+                      TextStyle(fontSize: 11, color: colors.mutedForeground),
+                ),
+            ],
+          ),
+          if (comentario.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              comentario,
+              style: TextStyle(
+                fontSize: 13,
+                color: colors.mutedForeground,
+                height: 1.5,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReviewsSection(DynamicColors colors) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Header
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Reseñas',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: colors.foreground,
+              ),
+            ),
+            if (!_reviewsLoading && _totalReviews > 0)
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: colors.muted,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  '$_totalReviews',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: colors.mutedForeground,
+                  ),
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(height: 12),
+
+        if (_reviewsLoading) ...[
+          _buildShimmerBlock(colors, height: 110),
+          const SizedBox(height: 10),
+          _buildShimmerBlock(colors, height: 80),
+        ] else if (_reviews.isEmpty) ...[
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: colors.card,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: colors.border),
+            ),
+            child: Column(
+              children: [
+                Icon(
+                  Icons.rate_review_outlined,
+                  size: 36,
+                  color: colors.mutedForeground.withValues(alpha: 0.4),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Sin reseñas aún',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: colors.mutedForeground,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Sé el primero en reseñar este producto',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: colors.mutedForeground.withValues(alpha: 0.7),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+        ] else ...[
+          // Summary card
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: colors.card,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: colors.border),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Column(
+                  children: [
+                    Text(
+                      _avgRating.toStringAsFixed(1),
+                      style: TextStyle(
+                        fontSize: 38,
+                        fontWeight: FontWeight.w800,
+                        color: colors.foreground,
+                        letterSpacing: -1,
+                      ),
+                    ),
+                    _buildStars(_avgRating),
+                    const SizedBox(height: 4),
+                    Text(
+                      '$_totalReviews reseña${_totalReviews != 1 ? 's' : ''}',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: colors.mutedForeground,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(width: 16),
+                Container(width: 1, height: 80, color: colors.border),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    children: [5, 4, 3, 2, 1]
+                        .map((s) => _buildRatingBar(s, colors))
+                        .toList(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // Review cards
+          ..._reviews.map((r) => _buildReviewCard(r, colors)),
+        ],
+      ],
     );
   }
 
